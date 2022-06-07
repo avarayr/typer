@@ -1,7 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+if (
+  !new (class {
+    x: any;
+  })().hasOwnProperty("x")
+) {
+  throw new Error("Transpiler is not configured correctly");
+}
 function App() {
   return (
     <div className="App">
