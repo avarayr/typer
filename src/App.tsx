@@ -55,12 +55,15 @@ const Word = memo(
 const Timer = ({
   startCounting,
   correctWords,
+  onStatsUpdate,
 }: {
   startCounting: boolean;
   correctWords: number;
+  onStatsUpdate: ({ wpm }: { wpm: number }) => void;
 }) => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer | null>(null);
+  const [wpm, setWpm] = useState(0);
 
   useEffect(() => {
     if (startCounting && !intervalId) {
@@ -79,6 +82,12 @@ const Timer = ({
   const minutesPassed = timeElapsed / 60;
   const speed =
     minutesPassed !== 0 ? Math.round(correctWords / minutesPassed) : 0;
+
+  useEffect(() => {
+    setWpm(speed);
+    onStatsUpdate({ wpm });
+  }, [speed, wpm, onStatsUpdate]);
+
   return <Box>{speed} words per minute</Box>;
 };
 
@@ -113,21 +122,28 @@ function App() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [startCounting, setStartCounting] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
+  const [wpm, setWpm] = useState(0);
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;
 
-    if (key === " ") {
+    if (key === " " && !isFinished) {
       const { value } = e.currentTarget;
-      console.log(value);
+
       const currentWord = words[currentWordIndex];
       if (value.trim() === currentWord.word.trim()) {
         currentWord.correct = true;
       } else {
         currentWord.correct = false;
       }
-      setCurrentWordIndex((c) => c + 1);
       setInputValue("");
+      setCurrentWordIndex((c) => c + 1);
+      // check if we have reached the end of the list
+      if (currentWordIndex >= words.length - 1) {
+        setIsFinished(true);
+        setStartCounting(false);
+      }
     }
   };
 
@@ -139,12 +155,17 @@ function App() {
     setInputValue(e.currentTarget.value);
   };
 
+  const handleStatsUpdate = ({ wpm }: { wpm: number }) => {
+    setWpm(wpm);
+  };
+
   return (
     <Container mt="50px">
       <Box>
         <Timer
           startCounting={startCounting}
           correctWords={words.filter((word) => word.correct === true).length}
+          onStatsUpdate={handleStatsUpdate}
         />
       </Box>
       <Box bg="text.primary" p={4}>
@@ -158,7 +179,23 @@ function App() {
         onChange={handleInputChange}
         value={inputValue}
       />
+
+      {isFinished && <Stats wpm={wpm} />}
     </Container>
+  );
+}
+
+function Stats({ wpm }: { wpm: number }) {
+  return (
+    <Box
+      bg="text.primary"
+      p={4}
+      fontSize="2xl"
+      fontWeight="bold"
+      textAlign="center"
+    >
+      {wpm} words per minute
+    </Box>
   );
 }
 
