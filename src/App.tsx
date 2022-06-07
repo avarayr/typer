@@ -9,11 +9,12 @@ import { IWord } from "./interfaces/IWord";
 import { WordList } from "./components/WordList";
 import { HintText } from "./components/HintText";
 import { Stats } from "./components/Stats";
+import TyperConfig from "./config/TyperConfig";
 
 let words: IWord[] = [];
 
 function RefreshWords() {
-  words = randomWords({ exactly: 10 }).map((word) => ({
+  words = randomWords({ exactly: TyperConfig.wordCount }).map((word) => ({
     word,
     correct: null,
   }));
