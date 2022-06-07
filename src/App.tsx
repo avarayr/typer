@@ -1,6 +1,22 @@
 // Typing speed test game for React
 
-import { Box, Center, Container, Input, Kbd } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Container,
+  Input,
+  Kbd,
+  Table,
+  Text,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  SimpleGrid,
+} from "@chakra-ui/react";
 import randomWords from "random-words";
 import { motion } from "framer-motion";
 
@@ -104,7 +120,7 @@ const WordList = ({
   currentWordIndex: number;
 }) => {
   return (
-    <Box>
+    <Box padding="10px 15px" backgroundColor="yellow.100">
       {words.map((word, index) => (
         <Word
           key={index}
@@ -200,7 +216,14 @@ function App() {
         value={inputValue}
       />
       <HintText isFinished={isFinished} isStarted={startCounting} />
-      {isFinished && <Stats wpm={wpm} />}
+      {isFinished && (
+        <Stats
+          wpm={wpm}
+          accuracy={
+            words.filter((word) => word.correct === true).length / words.length
+          }
+        />
+      )}
     </Container>
   );
 }
@@ -231,7 +254,7 @@ function HintText({
   );
 }
 
-function Stats({ wpm }: { wpm: number }) {
+function Stats({ wpm, accuracy }: { wpm: number; accuracy: number }) {
   return (
     <Center bg="text.primary" pt={20}>
       <motion.div
@@ -250,7 +273,21 @@ function Stats({ wpm }: { wpm: number }) {
           fontSize="23"
           colors={["#f00", "#0f0"]}
           arcWidth={0.2}
-          percent={Math.min(1, wpm / 130)}
+          percent={Math.min(1, wpm / 120)}
+        />
+        <GaugeChart
+          style={{ width: "400px", paddingTop: "50px" }}
+          id="gauge-chart3"
+          nrOfLevels={20}
+          formatTextValue={(_) =>
+            `${Math.round(Number(accuracy * 100)).toString()}% accuracy`
+          }
+          textColor="black"
+          animDelay={0}
+          fontSize="23"
+          colors={["#f00", "#ff0"]}
+          arcWidth={0.2}
+          percent={Math.min(1, accuracy)}
         />
       </motion.div>
     </Center>
