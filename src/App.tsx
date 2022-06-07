@@ -1,17 +1,16 @@
-import {Box, Container, Input} from "@chakra-ui/react";
+import { Box, Container, Input } from "@chakra-ui/react";
 import randomWords from "random-words";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import "./App.css";
-import {Timer} from "./components/Timer";
-import {IWord} from "./interfaces/IWord";
-import {WordList} from "./components/WordList";
-import {HintText} from "./components/HintText";
-import {Stats} from "./components/Stats";
+import { Timer } from "./components/Timer";
+import { IWord } from "./interfaces/IWord";
+import { WordList } from "./components/WordList";
+import { HintText } from "./components/HintText";
+import { Stats } from "./components/Stats";
 
 let words: IWord[] = [];
-
 
 function RefreshWords() {
   words = randomWords({ exactly: 4 }).map((word) => ({
@@ -27,8 +26,6 @@ function App() {
   const [isFinished, setIsFinished] = useState(false);
   const [round, setRound] = useState(0);
   const [wpm, setWpm] = useState(0);
-
-
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;

@@ -1,4 +1,4 @@
 export interface IWord {
-    word: string;
-    correct: boolean | null;
+  word: string;
+  correct: boolean | null;
 }
