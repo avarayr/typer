@@ -4,11 +4,11 @@ import randomWords from "random-words";
 import React, {useState} from "react";
 
 import "./App.css";
-import {Timer} from "./Timer";
-import {IWord} from "./IWord";
-import {WordList} from "./WordList";
-import {HintText} from "./HintText";
-import {Stats} from "./Stats";
+import {Timer} from "./components/Timer";
+import {IWord} from "./interfaces/IWord";
+import {WordList} from "./components/WordList";
+import {HintText} from "./components/HintText";
+import {Stats} from "./components/Stats";
 
 let words: IWord[] = [];
 

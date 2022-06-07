@@ -1,4 +1,4 @@
-import {IWord} from "./IWord";
+import {IWord} from "../interfaces/IWord";
 import {Box} from "@chakra-ui/react";
 import {Word} from "./Word";
 
