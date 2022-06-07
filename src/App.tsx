@@ -13,7 +13,7 @@ import { Stats } from "./components/Stats";
 let words: IWord[] = [];
 
 function RefreshWords() {
-  words = randomWords({ exactly: 4 }).map((word) => ({
+  words = randomWords({ exactly: 10 }).map((word) => ({
     word,
     correct: null,
   }));
