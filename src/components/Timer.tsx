@@ -24,6 +24,7 @@ export const Timer = ({
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
+        setIntervalId(null);
       }
     };
   }, [startCounting, intervalId]);
@@ -37,5 +38,5 @@ export const Timer = ({
     onStatsUpdate({ wpm });
   }, [speed, wpm, onStatsUpdate]);
 
-  return <Box>{speed} words per minute</Box>;
+  return <Box pt={5}>{speed} words per minute</Box>;
 };

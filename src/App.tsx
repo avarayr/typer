@@ -1,4 +1,4 @@
-import { Box, Container, Input } from "@chakra-ui/react";
+import { Box, Center, Container, Input } from "@chakra-ui/react";
 import randomWords from "random-words";
 
 import React, { useState } from "react";
@@ -10,6 +10,7 @@ import { WordList } from "./components/WordList";
 import { HintText } from "./components/HintText";
 import { Stats } from "./components/Stats";
 import TyperConfig from "./config/TyperConfig";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
 let words: IWord[] = [];
 
@@ -26,7 +27,23 @@ function App() {
   const [startCounting, setStartCounting] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [round, setRound] = useState(0);
+  const [countdownKey, setCountdownKey] = useState(1000);
   const [wpm, setWpm] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(
+    TyperConfig.countdownSeconds
+  );
+
+  const restartGame = () => {
+    // We use the keys to refresh the game timer and countdown
+    setInputValue("");
+    setRound((r) => r + 1);
+    setCountdownKey((c) => c + 1);
+    setIsFinished(false);
+    RefreshWords();
+    setCurrentWordIndex(0);
+    setStartCounting(false);
+    setRemainingTime(TyperConfig.countdownSeconds);
+  };
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const { key } = e;
@@ -44,16 +61,13 @@ function App() {
         setStartCounting(false);
       }
     } else if (key === "Enter" && isFinished) {
-      // We use the round variable to force-refresh the timer
-      setRound((r) => r + 1);
-      setIsFinished(false);
-      RefreshWords();
-      setCurrentWordIndex(0);
-      setStartCounting(false);
+      restartGame();
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isFinished) return false;
+
     if (!startCounting) {
       setStartCounting(true);
     }
@@ -64,15 +78,33 @@ function App() {
     setWpm(wpm);
   };
 
+  const handleCountdownComplete = () => {
+    setStartCounting(false);
+    setIsFinished(true);
+  };
+
   return (
     <Container mt="50px">
       <Box>
-        <Timer
-          key={round}
-          startCounting={startCounting}
-          correctWords={words.filter((word) => word.correct === true).length}
-          onStatsUpdate={handleStatsUpdate}
-        />
+        <Center flexDir="column">
+          <CountdownCircleTimer
+            key={countdownKey}
+            isPlaying={startCounting}
+            duration={remainingTime}
+            colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+            colorsTime={[7, 5, 2, 0]}
+            onComplete={handleCountdownComplete}
+          >
+            {({ remainingTime }) => remainingTime}
+          </CountdownCircleTimer>
+
+          <Timer
+            key={round}
+            startCounting={startCounting}
+            correctWords={words.filter((word) => word.correct === true).length}
+            onStatsUpdate={handleStatsUpdate}
+          />
+        </Center>
       </Box>
       <Box bg="text.primary" p={4}>
         <WordList words={words} currentWordIndex={currentWordIndex} />
